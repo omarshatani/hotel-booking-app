@@ -69,6 +69,7 @@ function RootNavigator() {
             </View>
           ),
           headerRight: () => <Avatar />,
+          title: "",
         }}
         // options={{ headerShown: false }}
       />
