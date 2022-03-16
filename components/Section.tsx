@@ -1,20 +1,22 @@
 import React, { PropsWithChildren, ReactChildren } from "react";
-import { RegisteredStyle } from "react-native";
+import { RegisteredStyle, StyleProp, ViewStyle } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import { Text, View, ViewProps } from "./Themed";
 
 export default function Section({
   title = "",
   containerStyle,
+  titleContainerStyle,
   children,
 }: {
   title: string;
-  containerStyle?: RegisteredStyle<ViewProps & Record<never, number>>;
+  containerStyle?: StyleProp<ViewStyle>;
+  titleContainerStyle?: StyleProp<ViewStyle>;
   children?: PropsWithChildren<any>;
 }) {
   return (
     <View style={[styles.container, containerStyle]}>
-      <View style={styles.titleContainer}>
+      <View style={[styles.titleContainer, titleContainerStyle]}>
         <Text style={styles.text} semibold>
           {title}
         </Text>
@@ -25,10 +27,9 @@ export default function Section({
 }
 
 const styles = ScaledSheet.create({
-  container: { paddingVertical: "10@vs" },
+  container: { paddingVertical: "10@vs", paddingHorizontal: "20@s" },
   titleContainer: {
     marginBottom: "10@vs",
-    marginLeft: "10@s",
   },
   text: {
     fontSize: "14@s",
