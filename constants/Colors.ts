@@ -5,8 +5,8 @@ export default {
   light: {
     text: "#000",
     helpText: "#9c9c9c",
-    search: "#f5f5f5",
-    background: "#fff",
+    search: "#fff",
+    background: "#f7f7f7",
     primary: "#4ea5d9",
     tint: tintColorLight,
     tabIconDefault: "#ccc",
