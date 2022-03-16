@@ -1,6 +1,6 @@
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, RegisteredStyle } from "react-native";
+import { Platform, Pressable, RegisteredStyle } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -16,7 +16,7 @@ export default function Searchbar({
   const colorScheme = useColorScheme();
   return (
     <View style={[styles.container, containerStyle]}>
-      <View style={styles.box}>
+      <View style={[styles.box, styles.shadow]}>
         <TextInput placeholder="Search" medium />
       </View>
       <Pressable
@@ -25,7 +25,8 @@ export default function Searchbar({
         }}
         style={[
           styles.filterButton,
-          { backgroundColor: Colors[colorScheme].primary },
+          styles.shadow,
+          { backgroundColor: Colors.light.primary },
         ]}
       >
         <FontAwesome5
@@ -44,14 +45,12 @@ const styles = ScaledSheet.create({
     flexDirection: "row",
     width: "100%",
     borderRadius: 4,
-    // marginHorizontal: "10@s",
   },
   box: {
     flexGrow: 1,
     paddingVertical: "10@vs",
     paddingHorizontal: "10@s",
     borderRadius: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.05)",
   },
   filterButton: {
     justifyContent: "center",
@@ -63,5 +62,21 @@ const styles = ScaledSheet.create({
   },
   text: {
     fontSize: "12@s",
+  },
+  shadow: {
+    ...Platform.select({
+      android: {
+        elevation: 5,
+      },
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+    }),
   },
 });
