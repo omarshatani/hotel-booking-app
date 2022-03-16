@@ -57,6 +57,7 @@ export default function HomeScreen(props: RootTabScreenProps<"Home">) {
           renderItem={({ item }) => <LongCard {...item} />}
           contentContainerStyle={styles.flatListStyle}
           scrollEnabled={false}
+          bounces={false}
         />
       </Section>
     </ScrollView>

@@ -19,6 +19,23 @@ export default function LongCard({
   ...rest
 }: Hotel) {
   const colorScheme = useColorScheme();
+  const [starsArray, setStarsArray] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    const temp = [];
+    for (let index = 0; index < stars; index++) {
+      temp.push(
+        <FontAwesome
+          key={`${name}-${index}`}
+          name="star"
+          color="#fcba03"
+          size={12}
+          style={{ marginRight: 5 }}
+        />
+      );
+    }
+    setStarsArray(temp);
+  }, []);
 
   return (
     <View style={[styles.container, styles.shadow]}>
@@ -43,15 +60,7 @@ export default function LongCard({
               {name}
             </Text>
             <View style={{ flexDirection: "row", marginTop: 5 }}>
-              {Array(stars).fill(
-                <FontAwesome
-                  key={(Math.random() + 1).toString(36).substring(8)}
-                  name="star"
-                  color="#fcba03"
-                  size={12}
-                  style={{ marginRight: 5 }}
-                />
-              )}
+              {starsArray}
             </View>
           </View>
           <View
