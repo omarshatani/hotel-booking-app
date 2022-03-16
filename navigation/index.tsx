@@ -15,6 +15,7 @@ import * as React from "react";
 import { ColorSchemeName, Pressable } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import Avatar from "../components/Avatar";
+import Header from "../components/Header";
 import { Text, View } from "../components/Themed";
 
 import Colors from "../constants/Colors";
@@ -60,18 +61,24 @@ function RootNavigator() {
         component={HomeScreen}
         options={{
           headerShadowVisible: false,
-          headerTitle: () => (
-            <View>
-              <Text style={style.welcomeText}>Welcome buddy</Text>
-              <Text style={style.helpText}>
-                Let's start looking for hotels!
-              </Text>
-            </View>
-          ),
-          headerRight: () => <Avatar />,
+          header: (props) => <Header {...props} />,
+          // headerTitle: () => (
+          //   <View>
+          //     <Text style={style.welcomeText}>Welcome buddy</Text>
+          //     <Text style={style.helpText}>
+          //       Let's start looking for hotels!
+          //     </Text>
+          //   </View>
+          // ),
+          // headerRight: () => <Avatar />,
+          // headerStyle: {
+          //   backgroundColor: "#f5f5f5",
+          // },
           title: "",
+          contentStyle: {
+            backgroundColor: "#f5f5f5",
+          },
         }}
-        // options={{ headerShown: false }}
       />
       <Stack.Screen
         name="NotFound"
@@ -145,16 +152,3 @@ function TabBarIcon(props: {
 }) {
   return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }
-
-const style = ScaledSheet.create({
-  welcomeText: {
-    fontWeight: "bold",
-    fontSize: "16@s",
-    color: Colors.light.primary,
-  },
-  helpText: {
-    fontSize: "12@s",
-    fontWeight: "bold",
-    color: Colors.light.helpText,
-  },
-});
