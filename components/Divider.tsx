@@ -5,16 +5,18 @@ const Divider = ({
   horizontal,
   vertical,
   color,
+  spacing = 10,
 }: {
   horizontal?: boolean;
   vertical?: boolean;
   color?: string;
+  spacing?: number;
 }) => {
   return (
     <View
       style={[
-        vertical && { width: 1, marginHorizontal: 10 },
-        horizontal && { height: 1, marginVertical: 10 },
+        vertical && { width: 1, marginHorizontal: spacing },
+        horizontal && { height: 1, marginVertical: spacing },
         { backgroundColor: color ?? "transparent" },
       ]}
     />
