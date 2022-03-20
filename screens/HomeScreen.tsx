@@ -57,7 +57,14 @@ export default function HomeScreen({
         containerStyle={{ paddingHorizontal: 0 }}
         titleContainerStyle={styles.titleContainerStyle}
       >
-        <HorizontalCardsList data={popular} />
+        <HorizontalCardsList
+          data={popular}
+          onPress={(hotel: Hotel) =>
+            navigation.navigate("HotelDetails", {
+              hotel: hotel,
+            })
+          }
+        />
       </Section>
       <Section title="Best offers">
         <VerticalCardsList
