@@ -5,8 +5,10 @@ import Colors from "../constants/Colors";
 import Avatar from "./Avatar";
 import Searchbar from "./Seachbar";
 import { Text, View } from "./Themed";
+import { RootTabScreenProps } from "../types";
+import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 
-export default function Header(props: any) {
+export default function Header(props: NativeStackHeaderProps) {
   return (
     <SafeAreaView style={style.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -18,7 +20,7 @@ export default function Header(props: any) {
         </View>
         <Avatar />
       </View>
-      <Searchbar containerStyle={style.searchBarStyle} />
+      <Searchbar containerStyle={style.searchBarStyle} {...props} />
     </SafeAreaView>
   );
 }
