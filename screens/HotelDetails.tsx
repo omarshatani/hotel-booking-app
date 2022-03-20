@@ -1,5 +1,8 @@
 import { FontAwesome } from "@expo/vector-icons";
-import { setStatusBarStyle } from "expo-status-bar";
+import {
+  setStatusBarBackgroundColor,
+  setStatusBarStyle,
+} from "expo-status-bar";
 import React from "react";
 import { Image, ScrollView } from "react-native";
 import MapView, { Marker } from "react-native-maps";
@@ -48,6 +51,7 @@ export default function HotelDetails({
     }
     setStarsArray(temp);
     setStatusBarStyle("light");
+    setStatusBarBackgroundColor("transparent", true);
     mapRef.current?.animateCamera({
       center: {
         latitude: location.latitude,
