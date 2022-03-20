@@ -9,14 +9,16 @@ import { View } from "./Themed";
 export default function HorizontalCardsList({
   data,
   contentContainerStyle,
+  onPress,
 }: {
   data: Hotel[];
   contentContainerStyle?: StyleProp<ViewStyle>;
+  onPress?: (hotel: Hotel) => void;
 }) {
   return (
     <FlatList
       data={data}
-      renderItem={({ item }) => <SmallCard {...item} />}
+      renderItem={({ item }) => <SmallCard {...item} onPress={onPress} />}
       keyExtractor={(item) => item.id.toString()}
       horizontal
       showsHorizontalScrollIndicator={false}
