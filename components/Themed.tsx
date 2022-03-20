@@ -7,7 +7,13 @@ import {
   Text as DefaultText,
   View as DefaultView,
   TextInput as DefaultTextInput,
+  Button as DefaultButton,
+  Pressable,
+  Platform,
+  StyleProp,
+  PressableProps,
 } from "react-native";
+import { ScaledSheet } from "react-native-size-matters";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -45,6 +51,7 @@ export type TextInputProps = ThemeProps &
   DefaultTextInput["props"] &
   TextWeights;
 export type ViewProps = ThemeProps & DefaultView["props"];
+export type ButtonProps = ThemeProps & DefaultButton["props"];
 
 export function Text(props: TextProps) {
   const {
@@ -117,3 +124,55 @@ export function TextInput(props: TextInputProps) {
     />
   );
 }
+
+export function Button(
+  props: ButtonProps & { style?: StyleProp<PressableProps> }
+) {
+  const { lightColor, darkColor, ...otherProps } = props;
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, "tint");
+
+  return (
+    <Pressable
+      {...props}
+      style={({ pressed }) => [
+        styles.button,
+        styles.shadow,
+        props.style,
+        { backgroundColor: pressed ? "#0d78d6" : color },
+      ]}
+    >
+      <Text medium style={styles.button_text}>
+        {props.title}
+      </Text>
+    </Pressable>
+  );
+}
+
+const styles = ScaledSheet.create({
+  button: {
+    borderRadius: 10,
+    padding: 15,
+  },
+  button_text: {
+    textTransform: "uppercase",
+    color: "#fff",
+    textAlign: "center",
+    fontSize: "14@s",
+  },
+  shadow: {
+    ...Platform.select({
+      android: {
+        elevation: 5,
+      },
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+    }),
+  },
+});
