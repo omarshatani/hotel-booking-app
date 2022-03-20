@@ -1,19 +1,22 @@
 import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
-import { Text, View } from "../components/Themed";
+import { View } from "../components/Themed";
 import { Hotel, RootTabScreenProps } from "../types";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Section from "../components/Section";
-import Searchbar from "../components/Seachbar";
 import { getHotelsDetails } from "../api/hotels";
 import HorizontalCardsList from "../components/HorizontalCardsList";
-import { FlatList, ScrollView } from "react-native";
-import LongCard from "../components/LongCard";
-import Divider from "../components/Divider";
+import { ScrollView } from "react-native";
+import VerticalCardsList from "../components/VerticalCardsList";
+import AppLoading from "expo-app-loading";
+import { setStatusBarStyle } from "expo-status-bar";
 
-export default function HomeScreen(props: RootTabScreenProps<"Home">) {
-  const navigation = useNavigation();
-  const [hotels, setHotels] = React.useState<Hotel[]>([]);
+export default function HomeScreen({
+  navigation,
+  route,
+}: RootTabScreenProps<"Home">) {
+  const [popular, setPopular] = React.useState<Hotel[]>([]);
+  const [bestOffers, setBestOffers] = React.useState<Hotel[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -21,7 +24,8 @@ export default function HomeScreen(props: RootTabScreenProps<"Home">) {
       setLoading(true);
       try {
         const response: Hotel[] = (await getHotelsDetails()).data;
-        setHotels(response);
+        setPopular(response);
+        setBestOffers([...response].sort((a, b) => a.price - b.price));
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -30,34 +34,39 @@ export default function HomeScreen(props: RootTabScreenProps<"Home">) {
     })();
   }, []);
 
-  if (loading) return <View />; //TODO: migliorare gestione
+  useFocusEffect(
+    React.useCallback(() => {
+      setStatusBarStyle("auto");
+    }, [])
+  );
+
+  if (loading) return <AppLoading />;
+
+  if (route.params?.query) {
+    return (
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <Section title={`Search results for ${route.params.query}`}></Section>
+      </ScrollView>
+    );
+  }
 
   return (
-    <ScrollView
-      style={styles.container}
-      nestedScrollEnabled={true}
-      showsVerticalScrollIndicator={false}
-    >
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Section
         title="Popular Hotels"
         containerStyle={{ paddingHorizontal: 0 }}
         titleContainerStyle={styles.titleContainerStyle}
       >
-        <HorizontalCardsList data={hotels} />
+        <HorizontalCardsList data={popular} />
       </Section>
-      <Section
-        title="Best offers"
-        containerStyle={{ paddingHorizontal: 0 }}
-        titleContainerStyle={styles.titleContainerStyle}
-      >
-        <FlatList
-          data={hotels.sort((a, b) => a.price - b.price)}
-          keyExtractor={(item) => item.id.toString()}
-          ItemSeparatorComponent={() => <Divider horizontal />}
-          renderItem={({ item }) => <LongCard {...item} />}
-          contentContainerStyle={styles.flatListStyle}
-          scrollEnabled={false}
-          bounces={false}
+      <Section title="Best offers">
+        <VerticalCardsList
+          data={bestOffers}
+          onPress={(hotel: Hotel) =>
+            navigation.navigate("HotelDetails", {
+              hotel: hotel,
+            })
+          }
         />
       </Section>
     </ScrollView>
@@ -68,14 +77,7 @@ const styles = ScaledSheet.create({
   container: {
     minHeight: "100%",
   },
-  searchBar: {
-    marginVertical: "12@vs",
-  },
   titleContainerStyle: {
     paddingHorizontal: "20@s",
-  },
-  flatListStyle: {
-    paddingVertical: "5@s",
-    paddingHorizontal: "25@s",
   },
 });
