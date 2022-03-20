@@ -19,7 +19,6 @@ export default function LongCard(
     price,
     currency,
     stars,
-
     onPress,
   } = props;
   const colorScheme = useColorScheme();
@@ -132,10 +131,10 @@ export default function LongCard(
             marginTop: 5,
           }}
         >
-          <Text semibold style={{ fontSize: 18 }}>
+          <Text semibold style={{ fontSize: 18, marginRight: 5 }}>
             {getSignFromCurrency(currency)} {price}
           </Text>
-          <Text style={{ fontSize: 11 }}>/night</Text>
+          <Text style={{ fontSize: 11 }}>per night</Text>
         </View>
       </View>
     </Pressable>
