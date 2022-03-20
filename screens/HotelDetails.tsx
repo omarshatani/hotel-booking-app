@@ -2,11 +2,14 @@ import { FontAwesome } from "@expo/vector-icons";
 import { setStatusBarStyle } from "expo-status-bar";
 import React from "react";
 import { Image, ScrollView } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 import { scale, ScaledSheet } from "react-native-size-matters";
 import Swiper from "react-native-swiper";
-import { Text, View } from "../components/Themed";
+import Divider from "../components/Divider";
+import { Button, Text, View } from "../components/Themed";
 import Colors from "../constants/Colors";
 import { RootTabScreenProps } from "../types";
+import { getSignFromCurrency } from "../utils";
 
 export default function HotelDetails({
   navigation,
@@ -28,6 +31,7 @@ export default function HotelDetails({
     },
   } = params;
   const [starsArray, setStarsArray] = React.useState<any[]>([]);
+  const mapRef = React.createRef<MapView>();
 
   React.useEffect(() => {
     const temp = [];
@@ -44,6 +48,12 @@ export default function HotelDetails({
     }
     setStarsArray(temp);
     setStatusBarStyle("light");
+    mapRef.current?.animateCamera({
+      center: {
+        latitude: location.latitude,
+        longitude: location.longitude,
+      },
+    });
   }, []);
 
   return (
@@ -74,21 +84,118 @@ export default function HotelDetails({
               </Text>
             </View>
           </View>
-          <View style={styles.rating_container}>
-            <View style={styles.rating}>
-              <FontAwesome
-                name="star"
-                color="#fcba03"
-                size={scale(15)}
-                style={{ marginRight: 5 }}
-              />
-              <Text semibold style={styles.rating_text}>
-                {userRating}
-              </Text>
+          <View>
+            <View style={styles.rating_container}>
+              <View style={styles.rating}>
+                <FontAwesome
+                  name="star"
+                  color="#fcba03"
+                  size={scale(15)}
+                  style={{ marginRight: 5 }}
+                />
+                <Text semibold style={styles.rating_text}>
+                  {userRating}
+                </Text>
+              </View>
+              <Text medium>Users rating</Text>
             </View>
-            <Text medium>Users rating</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "baseline",
+                marginTop: 5,
+              }}
+            >
+              <Text semibold style={{ fontSize: 18, marginRight: 5 }}>
+                {getSignFromCurrency(currency)} {price}
+              </Text>
+              <Text style={{ fontSize: 11 }}>per night</Text>
+            </View>
           </View>
         </View>
+        <Divider horizontal color="rgba(0, 0, 0, 0.05)" />
+        <View>
+          <Text semibold style={{ fontSize: 17, marginBottom: 5 }}>
+            Contacts
+          </Text>
+          <View style={{ flexDirection: "row", marginBottom: 5 }}>
+            <Text medium style={{ marginRight: 5 }}>
+              Phone
+            </Text>
+            <Text>{contact.phoneNumber}</Text>
+          </View>
+          <View style={{ flexDirection: "row", marginBottom: 5 }}>
+            <Text medium style={{ marginRight: 5 }}>
+              Email
+            </Text>
+            <Text>{contact.email}</Text>
+          </View>
+        </View>
+        <Divider horizontal color="rgba(0, 0, 0, 0.05)" />
+        <View
+          style={{
+            flexDirection: "row",
+            width: "50%",
+            justifyContent: "space-between",
+          }}
+        >
+          <View>
+            <Text semibold style={{ fontSize: 17, marginBottom: 5 }}>
+              Check in
+            </Text>
+            <View style={{ flexDirection: "row", marginBottom: 5 }}>
+              <Text medium style={{ marginRight: 5 }}>
+                from
+              </Text>
+              <Text>{checkIn.from}</Text>
+            </View>
+            <View style={{ flexDirection: "row", marginBottom: 5 }}>
+              <Text medium style={{ marginRight: 5 }}>
+                to
+              </Text>
+              <Text>{checkIn.to}</Text>
+            </View>
+          </View>
+          <View>
+            <Text semibold style={{ fontSize: 17, marginBottom: 5 }}>
+              Check out
+            </Text>
+            <View style={{ flexDirection: "row", marginBottom: 5 }}>
+              <Text medium style={{ marginRight: 5 }}>
+                from
+              </Text>
+              <Text>{checkOut.from}</Text>
+            </View>
+            <View style={{ flexDirection: "row", marginBottom: 5 }}>
+              <Text medium style={{ marginRight: 5 }}>
+                to
+              </Text>
+              <Text>{checkOut.to}</Text>
+            </View>
+          </View>
+        </View>
+        <Divider horizontal color="rgba(0, 0, 0, 0.05)" />
+        <MapView
+          ref={mapRef}
+          style={{
+            width: "100%",
+            height: 200,
+          }}
+          zoomEnabled
+          zoomTapEnabled
+          zoomControlEnabled
+          minZoomLevel={18}
+        >
+          <Marker
+            title={name}
+            coordinate={{
+              latitude: location.latitude,
+              longitude: location.longitude,
+            }}
+          />
+        </MapView>
+        <Divider horizontal />
+        <Button title="Book now" onPress={() => {}} style={{}} />
       </View>
     </ScrollView>
   );
@@ -113,7 +220,6 @@ const styles = ScaledSheet.create({
   title: {
     fontSize: "15@s",
     marginBottom: "5@vs",
-    //marginVertical: "5@vs",
   },
   address_container: { flexDirection: "row", alignItems: "center" },
   address: {
