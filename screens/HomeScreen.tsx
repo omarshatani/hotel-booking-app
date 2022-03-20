@@ -17,6 +17,7 @@ export default function HomeScreen({
 }: RootTabScreenProps<"Home">) {
   const [popular, setPopular] = React.useState<Hotel[]>([]);
   const [bestOffers, setBestOffers] = React.useState<Hotel[]>([]);
+  const [filteredData, setFilteredData] = React.useState<Hotel[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -24,15 +25,45 @@ export default function HomeScreen({
       setLoading(true);
       try {
         const response: Hotel[] = (await getHotelsDetails()).data;
+        setFilteredData(response);
         setPopular(response);
         setBestOffers([...response].sort((a, b) => a.price - b.price));
         setLoading(false);
       } catch (err) {
-        console.error(err);
         setLoading(false);
       }
     })();
   }, []);
+
+  React.useEffect(() => {
+    if (route.params?.query) {
+      let regexp = new RegExp(route.params.query, "i");
+      if (route.params?.query.length) {
+        let filter = popular.filter((data: Hotel) => regexp.test(data.name));
+        if (route.params?.filter) {
+          switch (route.params.filter.value) {
+            case "price":
+              if (route.params.filter.order === "desc")
+                setFilteredData(filter.sort((a, b) => b.price - a.price));
+              else setFilteredData(filter.sort((a, b) => a.price - b.price));
+              break;
+            case "rating":
+              if (route.params.filter.order === "desc")
+                setFilteredData(
+                  filter.sort((a, b) => a.userRating - b.userRating)
+                );
+              else
+                setFilteredData(
+                  filter.sort((a, b) => b.userRating - a.userRating)
+                );
+              break;
+          }
+        } else {
+          setFilteredData(filter);
+        }
+      } else setFilteredData(popular);
+    }
+  }, [route.params?.query, route.params?.filter?.label]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -45,7 +76,16 @@ export default function HomeScreen({
   if (route.params?.query) {
     return (
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <Section title={`Search results for ${route.params.query}`}></Section>
+        <Section title={`Search results for ${route.params.query}`}>
+          <VerticalCardsList
+            data={filteredData}
+            onPress={(hotel: Hotel) =>
+              navigation.navigate("HotelDetails", {
+                hotel: hotel,
+              })
+            }
+          />
+        </Section>
       </ScrollView>
     );
   }
@@ -58,7 +98,7 @@ export default function HomeScreen({
         titleContainerStyle={styles.titleContainerStyle}
       >
         <HorizontalCardsList
-          data={popular}
+          data={popular.filter((_, index) => index < 5)}
           onPress={(hotel: Hotel) =>
             navigation.navigate("HotelDetails", {
               hotel: hotel,

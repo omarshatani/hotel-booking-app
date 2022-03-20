@@ -12,6 +12,7 @@ import {
   NativeStackHeaderProps,
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
+import { Filter } from "./components/Seachbar";
 
 declare global {
   namespace ReactNavigation {
@@ -31,7 +32,7 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
 
 export type RootTabParamList = {
   Header: NativeStackHeaderProps;
-  Home: { query?: string };
+  Home: { query?: string; filter?: Filter };
   HotelDetails: { hotel: Hotel };
   TabOne: undefined;
   TabTwo: undefined;
