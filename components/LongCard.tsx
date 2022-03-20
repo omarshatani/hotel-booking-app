@@ -1,23 +1,27 @@
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import React from "react";
-import { Image, ImageBackground, Platform } from "react-native";
+import { Image, View, Platform, Pressable } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import { Hotel } from "../types";
 import { getSignFromCurrency } from "../utils";
-import { Text, View } from "./Themed";
+import { Text } from "./Themed";
 
-export default function LongCard({
-  gallery,
-  name,
-  location,
-  userRating,
-  price,
-  currency,
-  stars,
-  ...rest
-}: Hotel) {
+export default function LongCard(
+  props: Hotel & { onPress?: (hotel: Hotel) => void }
+) {
+  const {
+    gallery,
+    name,
+    location,
+    userRating,
+    price,
+    currency,
+    stars,
+
+    onPress,
+  } = props;
   const colorScheme = useColorScheme();
   const [starsArray, setStarsArray] = React.useState<any[]>([]);
 
@@ -38,7 +42,29 @@ export default function LongCard({
   }, []);
 
   return (
-    <View style={[styles.container, styles.shadow]}>
+    <Pressable
+      style={({ pressed }) => [
+        { backgroundColor: pressed ? "#ededed" : "#fff" },
+        styles.container,
+        styles.shadow,
+      ]}
+      onPress={() =>
+        onPress &&
+        onPress({
+          id: props.id,
+          checkIn: props.checkIn,
+          checkOut: props.checkOut,
+          contact: props.contact,
+          gallery,
+          name,
+          location,
+          userRating,
+          price,
+          currency,
+          stars,
+        })
+      }
+    >
       <Image source={{ uri: gallery[0] }} style={styles.image} />
       <View style={{ width: "70%" }}>
         <View
@@ -112,7 +138,7 @@ export default function LongCard({
           <Text style={{ fontSize: 11 }}>/night</Text>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -121,6 +147,7 @@ const styles = ScaledSheet.create({
     borderRadius: 10,
     padding: 8,
     flexDirection: "row",
+    overflow: "hidden",
   },
   image: {
     height: "80@s",
